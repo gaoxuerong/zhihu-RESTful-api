@@ -20,12 +20,21 @@ class Application extends Emitter{
     ctx.res = ctx.request.res = res
     return ctx
   }
+   // 中间件组合
+  compose(ctx, middleware) {
+    function dispath(index) {
+      if (index === middleware.length) { return () => {}}
+      const middlewareitem = middleware[index]
+      middlewareitem(ctx, () => dispath(index + 1))
+    }
+    dispath(0)
+  }
   // 处理request请求
   handleRequest (req, res) {
     // 先创建上下文
     const ctx = this.createContext(req, res)
     // 再把所有中间件进行组合
-    this.middleware[0](ctx)
+    this.compose(ctx, this.middleware)
   }
   // 收集中间件
   use (fn) {
