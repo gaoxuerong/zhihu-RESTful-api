@@ -7,10 +7,10 @@ class Application extends Emitter{
   constructor () {
     super()
     this.middleware = []
-    this.request = Object.create(request) // 使用 Object.create()继承原有的功能，又不污染原有的对象
+    // 使用 Object.create()，拥有了原有的功能，仅仅拥有了原有的功能，将对象原型链上hasOwnProperty等属性去掉了
+    this.request = Object.create(request)
     this.response = Object.create(response)
     this.context = Object.create(context)
-
   }
   createContext (req, res) {
     const ctx = this.context
