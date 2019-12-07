@@ -25,7 +25,7 @@ class Application extends Emitter{
     function dispath(index) {
       if (index === middleware.length) { return () => {}}
       const middlewareitem = middleware[index]
-      return middlewareitem(ctx, () => dispath(index + 1))
+      return Promise.resolve(middlewareitem(ctx, () => dispath(index + 1)))
     }
     dispath(0)
   }
