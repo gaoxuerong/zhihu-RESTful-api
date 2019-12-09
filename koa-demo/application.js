@@ -1,5 +1,6 @@
 const Emitter = require('events')
 const http = require('http')
+const Stream = require('stream')
 const request = require('./request')
 const response = require('./response')
 const context = require('./context')
@@ -33,10 +34,28 @@ class Application extends Emitter{
   handleRequest (req, res) {
     // 先创建上下文
     const ctx = this.createContext(req, res)
+    res.statusCode = 404
     // 再把所有中间件进行组合
     let p = this.compose(ctx, this.middleware)
     p.then( () => {
-      console.log(ctx.body)
+      const body = ctx.body
+      if (body instanceof Stream) {
+        // res.setHeader('Content-Disposition','attachment')
+        body.pipe(res)
+      } else if(typeof body === 'number') {
+        res.setHeader('Content-Type', 'text/plain;charset=utf8')
+        res.end(body.toString())
+      } else if (typeof body === 'object') {
+        res.setHeader('Content-Type', 'application/json;charset=utf8')
+        res.end(JSON.stringify(body))
+      } else if(typeof body === 'string' || Buffer.isBuffer(body)) {
+        res.setHeader('Content-Type', 'text/plain;charset=utf8')
+        res.end(body)
+      } else {
+        res.end(`not found`)
+      }
+    }).catch((e) => {
+      this.emit(`error`, e)
     })
   }
   // 收集中间件
