@@ -13,7 +13,21 @@ const rs = fs.createReadStream('./index.html', {
 // 默认情况下非流动模式，如果监听了on（data）就会变成流动模式，不停的读取文件，直到读完，然后触发on(end)事件，
 rs.on('data', function(data) {
     console.log(data)
+    rs.pause() // 让当前的on(data)事件暂停触发，只触发一次
 })
+setTimeout(() => {
+    rs.resume() // 恢复触发on(data)事件
+},1000)
 rs.on('end', function(data) {
     console.log(`读取完毕`)
+})
+// 文件
+rs.on('open', function() {
+    console.log(`文件被打开了`)
+})
+rs.on('close', function() {
+    console.log(`文件被关闭了`)
+})
+rs.on('error', function() {
+    console.log(`文件出错了`)
 })
