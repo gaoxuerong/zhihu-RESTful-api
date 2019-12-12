@@ -32,7 +32,14 @@ class ReadStream extends eventEmitter {
         })
     }
     read() {
-
+        if(typeof this.fd !== 'number') {
+            this.once('open', () => this.read())
+        }
+        const buffer = Buffer.alloc(this.highWaterMark)
+        const howMuchToRead = this.end ? Math.min(this.highWaterMark,(this.end - this.pos + 1)) : this.highWaterMark
+        fs.read(this.fd, buffer, 0, howMuchToRead,this.pos,(err, byteRead)=> {
+            this.pos += byteRead
+        } )
     }
 }
 module.exports = ReadStream;
