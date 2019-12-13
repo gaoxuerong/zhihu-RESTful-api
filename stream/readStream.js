@@ -37,8 +37,19 @@ class ReadStream extends eventEmitter {
         }
         const buffer = Buffer.alloc(this.highWaterMark)
         const howMuchToRead = this.end ? Math.min(this.highWaterMark,(this.end - this.pos + 1)) : this.highWaterMark
+        if(howMuchToRead == 0) {
+            this.flowing = null
+            this.emit('end')
+            return this.close()
+        }
         fs.read(this.fd, buffer, 0, howMuchToRead,this.pos,(err, byteRead)=> {
             this.pos += byteRead
+            if (byteRead > 0) {
+                if (this.flowing) {
+                    this.emit('data', buffer.slice(0,byteRead))
+                    this.read()
+                }
+            }
         } )
     }
 }
