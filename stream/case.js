@@ -9,7 +9,13 @@ const rs = new ReadStream('./index.md', {
 })
 // on off emit once newListener
 rs.on('data', function(data) {
-  console.log(data+111)
+  console.log(data)
+})
+rs.on('end', function(data) {
+  console.log(`end`)
+})
+rs.on('close', function(data) {
+  console.log(`close`)
 })
 rs.on('error', function(err) {
   console.log(err+'err')
