@@ -15,3 +15,5 @@ ws.on('drain',() => {
   console.log(`干了`)
   write()
 })
+ws.write('你')
+ws.write('好')

@@ -15,6 +15,8 @@ class WriteStream extends eventEmitter {
     this.len = 0
     // 维护一个写入的位置
     this.pos = this.start
+    // 标示用户是否正在写入
+    this.writing = false
     // 打开文件 等待用户调用write方法
     this.open()
   }
@@ -27,9 +29,15 @@ class WriteStream extends eventEmitter {
       this.emit("open", fd);
     });
   }
-  write() {
+  write(chunk, encoding = this.encoding, callback) {
+    chunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+    this.len += chunk.length
+    const flags = this.len >= this.highWaterMark
+    if (flags) { // 已经超过预期了，触发drain事件
+      this.needDrain = true
+    }
     if(typeof this.fd !== 'number') {
-      return this.once('open',() => this.write())
+      return this.once('open',() => this.write(chunk, encoding, callback))
     }
     // 用户调用write方法，第一次是真的写，其他的都要存起来
     if (this.writing) {
@@ -40,7 +48,18 @@ class WriteStream extends eventEmitter {
       })
     } else {
       this.writing = true
-      this._write()
+      // 当第一个写入成功后，调用此回调函数，清空数组中的方法
+      this._write(chunk, encoding,() => this.clearBuffer())
     }
+    return !flags
+  }
+  _write(chunk, encoding, callback) {
+    fs.write(this.fd, chunk, 0, chunk.length, this.pos, (err, written) => {
+      // written就是当前写入的个数，每次写入完成后，需要将缓存区减少
+      this.len -= this.written
+    })
+  }
+  clearBuffer() {
+
   }
 }
