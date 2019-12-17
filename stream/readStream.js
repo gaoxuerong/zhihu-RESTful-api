@@ -22,6 +22,9 @@ class ReadStream extends eventEmitter {
       }
     });
   }
+  pipe(ws) {
+
+  }
   open() {
     fs.open(this.path, this.flags, (err, fd) => {
       if (err) {
