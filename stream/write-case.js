@@ -1,7 +1,6 @@
-const fs = require('fs')
 const writeStream = require('./writeStream')
-const ws = fs.createWriteStream('1.txt', {
-  highWaterMark: 16*1024
+const ws = new writeStream('1.txt', {
+  highWaterMark: 3
 })
 let i = 0
 function write() {
@@ -15,5 +14,3 @@ ws.on('drain',() => {
   console.log(`干了`)
   write()
 })
-ws.write('你')
-ws.write('好')

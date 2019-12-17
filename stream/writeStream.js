@@ -1,4 +1,5 @@
 const eventEmitter = require("events");
+const fs = require('fs')
 class WriteStream extends eventEmitter {
   constructor(path, options = {}) {
     super();
@@ -36,9 +37,6 @@ class WriteStream extends eventEmitter {
     if (flags) { // 已经超过预期了，触发drain事件
       this.needDrain = true
     }
-    if(typeof this.fd !== 'number') {
-      return this.once('open',() => this.write(chunk, encoding, callback))
-    }
     // 用户调用write方法，第一次是真的写，其他的都要存起来
     if (this.writing) {
       this.cache.push({
@@ -54,12 +52,29 @@ class WriteStream extends eventEmitter {
     return !flags
   }
   _write(chunk, encoding, callback) {
+    if(typeof this.fd !== 'number') {
+      return this.once('open',() => this._write(chunk, encoding, callback))
+    }
     fs.write(this.fd, chunk, 0, chunk.length, this.pos, (err, written) => {
       // written就是当前写入的个数，每次写入完成后，需要将缓存区减少
-      this.len -= this.written
+      this.len -= written
+      this.pos += written
+      callback() //清空数组下一项
     })
   }
   clearBuffer() {
+    const obj = this.cache.shift()
+    if (obj) {
+      this._write(obj.chunk, obj.encoding, () => this.clearBuffer())
+    } else {
+      if (this.needDrain) {
+        this.writing = false // 缓存区干了，下一次写入到文件里，而不是内存里
+        this.needDrain = false
+        this.emit('drain')
+      }
 
+    }
   }
 }
+
+module.exports = WriteStream
