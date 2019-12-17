@@ -4,7 +4,7 @@ class ReadStream extends eventEmitter {
   constructor(path, options = {}) {
     super();
     this.path = path;
-    this.flags = options.flags;
+    this.flags = options.flags || 'r';
     this.highWaterMark = options.highWaterMark || 64 * 1024;
     this.start = options.start || 0;
     this.end = options.end || null;
@@ -22,8 +22,24 @@ class ReadStream extends eventEmitter {
       }
     });
   }
+  resume() {
+    this.flowing = true
+    this.read() // 变成流动模式
+  }
+  pause() {
+    this.flowing = false
+  }
   pipe(ws) {
-
+    this.on('data', (data) => {
+      const flag = ws.write(data)
+      if (!flag) {
+        this.pause()
+      }
+    })
+    ws.on('drain', () => {
+      console.log('drain')
+      this.resume()
+    })
   }
   open() {
     fs.open(this.path, this.flags, (err, fd) => {

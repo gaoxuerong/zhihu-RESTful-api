@@ -7,8 +7,8 @@
 //测试
 const writeStream = require('./writeStream')
 const ReadStream = require('./readStream')
-const rs = new ReadStream('1.txt')
-const ws = new writeStream('2.txt')
-rs.pipe(ws) 
+const rs = new ReadStream('1.txt', { highWaterMark: 4 })
+const ws = new writeStream('2.txt', { highWaterMark: 1 })
+rs.pipe(ws)
 
 
