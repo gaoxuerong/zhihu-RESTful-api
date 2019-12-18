@@ -3,10 +3,11 @@ const { Writable } = require('stream')
 class MyWrite extends Writable {
     _write(chunk,encoding,clearBuffer) {
         console.log(chunk.toString())
+        clearBuffer()
     }
 }
 const myWrite = new MyWrite()
-myWrite.write('123', 'utf8', () => {
+myWrite.write('2', 'utf8', () => {
     console.log('mywrite1')
 })
 myWrite.write('456', 'utf8', () => {
