@@ -8,7 +8,10 @@ const client = http.request({
         name: 'gxr',
 
     }
-},() => {
-
+},(res) => {
+    res.on('data',function(data) {
+        console.log(data.toString())
+    })
 })
+// 请求体
 client.end('age=9')
