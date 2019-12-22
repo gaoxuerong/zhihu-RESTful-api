@@ -1,0 +1,9 @@
+{
+  "name": "static",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "gxr-server": "./bin/www"
+  }
+}
