@@ -4,6 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "bin": {
-    "gxr-server": "./bin/www"
+    "gxr-server": "./bin/www.js"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "commander": "^4.0.1",
+    "debug": "^4.1.1",
+    "ejs": "^3.0.1",
+    "mime": "^2.4.4"
   }
 }

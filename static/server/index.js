@@ -1,0 +1,11 @@
+const http = require('http')
+const fs = require('fs')
+const url = require('url')
+const path = require('path')
+const { promisify } = require('util')
+// 第三方模块
+const mime = require('mime')
+const ejs = require('ejs')
+const chalk = require('chalk')
+const debug = require('debug')('a')
+debug('hello')
