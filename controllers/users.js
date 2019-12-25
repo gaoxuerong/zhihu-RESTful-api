@@ -10,6 +10,16 @@ class UsersControler {
     ctx.body = { name: "xuerong" };
   }
   created(ctx) {
+    ctx.verifyParams({
+      name: {
+        type: 'string',
+        required: true
+      },
+      age: {
+        type: 'number',
+        required: false
+      }
+    })
     ctx.body = { name: "xuerong" };
   }
   update(ctx) {

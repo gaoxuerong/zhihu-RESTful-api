@@ -7,17 +7,22 @@
   "license": "MIT",
   "url": "https://github.com/gaoxuerong/zhihu-RESTful-api.git",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "cross-env NODE_ENV=production nodemon index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js"
   },
   "dependencies": {
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
+    "koa-json-error": "^3.1.2",
+    "koa-parameter": "^3.0.1",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.1",
+    "mongoose": "^5.8.3",
     "querystring": "^0.2.0"
   },
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "nodemon": "^2.0.1"
   }
 }
