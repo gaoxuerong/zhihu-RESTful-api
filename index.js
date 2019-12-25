@@ -21,5 +21,5 @@ app.use(bodyparser()) // 解析请求体
 app.use(parameter(app))
 routing(app)
 app.listen(3000, 'localhost',() => {
-    console.log(`port 3000`)
+  console.log(`port 3000`)
 })
