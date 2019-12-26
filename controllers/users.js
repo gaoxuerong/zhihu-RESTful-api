@@ -1,26 +1,24 @@
+const User = require('../models/users')
 class UsersControler {
-  find(ctx) {
-    ctx.set("Allow", "GET, POST, DELETE, PUT, PATCH");
-    ctx.body = [{ name: "xuerong" }, {name: 'zhangsan'}];
+  async find(ctx) {
+    ctx.body = await User.find()
   }
-  findById(ctx) {
-    if (ctx.params.id * 1 > 10) {
-      ctx.throw(412,'ggggg')
+  async findById(ctx) {
+    const user = await User.finfindByIdd(ctx.params.id)
+    if (!user) {
+      ctx.throw(404,'用户不存在')
     }
-    ctx.body = { name: "xuerong" };
+    ctx.body = user
   }
-  created(ctx) {
+  async created(ctx) {
     ctx.verifyParams({
       name: {
         type: 'string',
         required: true
-      },
-      age: {
-        type: 'number',
-        required: false
       }
     })
-    ctx.body = { name: "xuerong" };
+    const user = await new User(ctx.request.body).save()
+    ctx.body = user
   }
   update(ctx) {
     ctx.body = { name: "xuerong123" };
