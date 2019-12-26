@@ -6,12 +6,6 @@ const mongoose = require('mongoose')
 const app = new Koa()
 const routing = require('./routes')
 const { connectionStr } = require('./config')
-// const auth = async (ctx, next) => { //安全相关中间件
-//   if(ctx.url !== '/users') {
-//     ctx.throw(401)
-//   }
-//   await next()
-// }
 mongoose.connect(connectionStr, { useUnifiedTopology: true, useNewUrlParser: true }, () => console.log(`cloud database connect success!`))
 mongoose.connection.on('error', console.error)
 app.use(error({
