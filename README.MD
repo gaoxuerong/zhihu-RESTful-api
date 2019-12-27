@@ -35,5 +35,6 @@
     base64UrlEncode(payload),
     secret)`
 - JWT缺点： JWT 的最大缺点是，由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。为了减少盗用，JWT 不应该使用 HTTP 协议明码传输，要使用 HTTPS 协议传输。
+- koa-bodyparser 只支持json/form，不支持文件这种方式；koa-body不仅支持json/form，还支持文件上传
 
 
