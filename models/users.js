@@ -13,6 +13,38 @@ const userSchema = new Schema({
     type: String,
     required: true,
     select: false
+  },
+  avatar_url: {
+    type: String
+  },
+  gender: {
+    type: String,
+    enum: ['male','female'],
+    default: 'male',
+    required: true
+  },
+  headline: {
+    type: String
+  },
+  locations: { // 字符串数组
+    type: [{type: String}]
+  },
+  business: {
+    type: String,
+  },
+  employments: {
+    type: [{
+      company: { type: String },
+      job: { type: String }
+    }]
+  },
+  educations: {
+    type: [{
+      school: { type: String },
+      major: { type: String },
+      diploma: { type: Number, enum: [1, 2, 3, 4, 5] },
+      entrance_year: { type: Number }
+    }]
   }
 })
 module.exports = model('User',userSchema)
