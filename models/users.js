@@ -27,24 +27,29 @@ const userSchema = new Schema({
     type: String
   },
   locations: { // 字符串数组
-    type: [{type: String}]
+    type: [{type: String}],
+    select: false
   },
   business: {
     type: String,
+    select: false
   },
   employments: {
     type: [{
       company: { type: String },
       job: { type: String }
-    }]
+    }],
+    select: false
   },
   educations: {
     type: [{
       school: { type: String },
       major: { type: String },
       diploma: { type: Number, enum: [1, 2, 3, 4, 5] },
-      entrance_year: { type: Number }
-    }]
+      entrance_year: { type: Number },
+      graduation_year: { type: Number }
+    }],
+    select: false
   }
 })
 module.exports = model('User',userSchema)
