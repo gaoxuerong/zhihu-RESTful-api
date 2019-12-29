@@ -114,5 +114,12 @@ class UsersControler {
     const token = jwt.sign({ _id, name}, secret, {expiresIn: '1d'})
     ctx.body = { token }
   }
+  async listFollowing(ctx) { // 获取关注者
+    const user = await User.findById(ctx.params.id).select('+following').populate('following')
+    if (!user) {
+      ctx.throw(404,'用户不存在')
+    }
+    ctx.body= user.following
+  }
 }
 module.exports = new UsersControler()

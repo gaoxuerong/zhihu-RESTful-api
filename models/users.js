@@ -50,6 +50,13 @@ const userSchema = new Schema({
       graduation_year: { type: Number }
     }],
     select: false
+  },
+  following: {
+    type: [{
+      type: Schema.Types.ObjectId, //Schema 是从mongoose引入的
+      ref: 'User' //ref代表引用，
+    }],
+    select: false
   }
 })
 module.exports = model('User',userSchema)

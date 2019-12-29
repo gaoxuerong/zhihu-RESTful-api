@@ -2,7 +2,16 @@ const Router = require("koa-router")
 const JWT = require('koa-jwt')
 const router = new Router({prefix: '/users'})
 // delete是js关键字，不能直接使用
-const { find, findById, created, update, delete:del, login, checkOwner } = require('../controllers/users')
+const {
+  find,
+  findById,
+  created,
+  update,
+  delete:del,
+  login,
+  checkOwner,
+  listFollowing
+} = require('../controllers/users')
 const { secret } = require('../config')
 // const auth = async (ctx, next) => { // 安全相关中间件
 //   const { authorization = '' } = ctx.request.header
@@ -22,5 +31,6 @@ router.get("/:id", findById)
 router.patch("/:id", auth, checkOwner, update)
 router.delete("/:id", auth, checkOwner, del)
 router.post('/login', login)
+router.get('/:id/following', listFollowing)
 module.exports = router
 
