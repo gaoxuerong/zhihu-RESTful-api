@@ -10,7 +10,11 @@ const {
   delete:del,
   login,
   checkOwner,
-  listFollowing
+  listFollowing,
+  follow,
+  unfollow,
+  listFollowers,
+  checkUserExist
 } = require('../controllers/users')
 const { secret } = require('../config')
 // const auth = async (ctx, next) => { // 安全相关中间件
@@ -32,5 +36,8 @@ router.patch("/:id", auth, checkOwner, update)
 router.delete("/:id", auth, checkOwner, del)
 router.post('/login', login)
 router.get('/:id/following', listFollowing)
+router.get('/:id/listFollowers', listFollowers)
+router.put('/following/:id',auth, checkUserExist, follow);
+router.delete('/following/:id',auth, checkUserExist, unfollow);
 module.exports = router
 
