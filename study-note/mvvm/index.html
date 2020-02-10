@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <input type="text" v-model="message.a">
+    <div>{{message.a}}</div>
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+  </div>
+  <script src="watcher.js"></script>
+  <script src="./observer.js"></script>
+  <script src="./compile.js"></script>
+  <script src="./index.js"></script>
+  <script>
+    /*
+    1.模版的编译
+    2.数据劫持，观察数据变化
+    3.watcher
+    */
+    let vm = new MVVM({
+      el: '#app',
+      data: {
+        message: {
+          a: 'hello giugnugn'
+        }
+      }
+    })
+  </script>
+</body>
+</html>
