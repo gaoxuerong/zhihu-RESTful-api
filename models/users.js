@@ -26,25 +26,29 @@ const userSchema = new Schema({
   headline: {
     type: String
   },
-  locations: { // 字符串数组
-    type: [{type: String}],
+  locations: {
+    type: [{
+      type:  Schema.Types.ObjectId,
+      ref: 'Topic'
+    }], // 引用
     select: false
   },
   business: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Topic',
     select: false
   },
   employments: {
     type: [{
-      company: { type: String },
-      job: { type: String }
+      company: { type: Schema.Types.ObjectId, ref: 'Topic' },
+      job: { type: Schema.Types.ObjectId, ref: 'Topic' },
     }],
     select: false
   },
   educations: {
     type: [{
-      school: { type: String },
-      major: { type: String },
+      school: { type: Schema.Types.ObjectId, ref: 'Topic' },
+      major: { type: Schema.Types.ObjectId, ref: 'Topic' },
       diploma: { type: Number, enum: [1, 2, 3, 4, 5] },
       entrance_year: { type: Number },
       graduation_year: { type: Number }
