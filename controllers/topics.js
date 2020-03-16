@@ -1,4 +1,5 @@
 const Topic = require('../models/topics')
+const User = require('../models/users')
 class TopicsControler {
   async find(ctx) {
     const { per_page = 10 } = ctx.query
@@ -34,11 +35,15 @@ class TopicsControler {
     ctx.body = topic
   }
   async checkTopicExist(ctx, next) {
-    const user = await User.findById(ctx.params.id)
+    const user = await Topic.findById(ctx.params.id)
     if (!user) {
       ctx.throw(404, '话题不存在')
     }
     await next()
+  }
+  async listFollowers(ctx) { // 找到关注话题的人
+    const users = await User.find({ following: ctx.params.id })
+    ctx.body = users
   }
 }
 module.exports = new TopicsControler()

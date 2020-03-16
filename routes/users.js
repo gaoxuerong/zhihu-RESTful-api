@@ -13,6 +13,7 @@ const {
   listFollowing,
   follow,
   unfollow,
+  listFollowingTopics,
   followTopics,
   unfollowTopics,
   listFollowers,
@@ -44,6 +45,7 @@ router.get('/:id/following', listFollowing)
 router.get('/:id/listFollowers', listFollowers)
 router.put('/following/:id',auth, checkUserExist, follow);
 router.delete('/following/:id',auth, checkUserExist, unfollow);
+router.get('/:id/followingTopics', listFollowingTopics)
 router.put('/followingTopics/:id',auth, checkTopicExist, followTopics);
 router.delete('/followingTopics/:id',auth, checkTopicExist, unfollowTopics);
 module.exports = router
