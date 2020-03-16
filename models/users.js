@@ -61,6 +61,13 @@ const userSchema = new Schema({
       ref: 'User' //ref代表引用，
     }],
     select: false
+  },
+  followingTopics: { // 实现用户和话题多对多关系
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Topic'
+    }],
+    select: false
   }
 })
 module.exports = model('User',userSchema)

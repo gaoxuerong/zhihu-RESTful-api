@@ -13,9 +13,14 @@ const {
   listFollowing,
   follow,
   unfollow,
+  followTopics,
+  unfollowTopics,
   listFollowers,
   checkUserExist
 } = require('../controllers/users')
+const {
+  checkTopicExist
+} = require('../controllers/topics')
 const { secret } = require('../config')
 // const auth = async (ctx, next) => { // 安全相关中间件
 //   const { authorization = '' } = ctx.request.header
@@ -39,5 +44,7 @@ router.get('/:id/following', listFollowing)
 router.get('/:id/listFollowers', listFollowers)
 router.put('/following/:id',auth, checkUserExist, follow);
 router.delete('/following/:id',auth, checkUserExist, unfollow);
+router.put('/followingTopics/:id',auth, checkTopicExist, followTopics);
+router.delete('/followingTopics/:id',auth, checkTopicExist, unfollowTopics);
 module.exports = router
 

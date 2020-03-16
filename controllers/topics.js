@@ -33,5 +33,12 @@ class TopicsControler {
     const topic = await Topic.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     ctx.body = topic
   }
+  async checkTopicExist(ctx, next) {
+    const user = await User.findById(ctx.params.id)
+    if (!user) {
+      ctx.throw(404, '话题不存在')
+    }
+    await next()
+  }
 }
 module.exports = new TopicsControler()
