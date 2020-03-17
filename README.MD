@@ -36,5 +36,27 @@
     secret)`
 - JWT缺点： JWT 的最大缺点是，由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。为了减少盗用，JWT 不应该使用 HTTP 协议明码传输，要使用 HTTPS 协议传输。
 - koa-bodyparser 只支持json/form，不支持文件这种方式；koa-body不仅支持json/form，还支持文件上传
+- 服务器：安装git、nodejs、nginx
+  - SSH登录到服务器
+  - 安装git，拉服务端代码；
+  - 安装nodejs；
+  - 在服务器安装pm2(pm2有很多功能，具体查看文档)
+    - pm2 log app  查看日志
+    - pm2 reload app  重新加载
+    - pm2 restart app 重启
+  - 安装nginx，做接口转发，把外网80端口转换到内网3000端口
+  ```
+    server {
+      listen 80;
+      server_name localhost;
+      location / {
+        proxy_pass http://127.0.0.1:3000;
+      }
+    }
+  ```
+- 学习拓展建议
+  - 学习 egg.js
+  - 学习多进程知识
+  - 学习使用日志和性能监控
 
 
