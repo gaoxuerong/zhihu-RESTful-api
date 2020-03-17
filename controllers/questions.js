@@ -29,7 +29,7 @@ class QuestionsControler {
       title: { type: 'string', required: false },
       desctiption: { type: 'string', required: false }
     })
-    ctx.state.question(ctx.request.body)
+    await ctx.state.question.update(ctx.request.body)
     ctx.body = ctx.state.question
   }
   async delete(ctx) {
