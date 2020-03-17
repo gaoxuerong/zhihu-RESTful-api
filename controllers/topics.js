@@ -41,8 +41,8 @@ class TopicsControler {
     }
     await next()
   }
-  async listFollowers(ctx) { // 找到关注话题的人
-    const users = await User.find({ following: ctx.params.id })
+  async listTopicFollowers(ctx) { // 找到关注话题的人
+    const users = await User.find({ followingTopics: ctx.params.id })
     ctx.body = users
   }
 }
