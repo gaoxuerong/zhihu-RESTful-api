@@ -15,7 +15,8 @@ class AnswersControler {
     if (!answer) {
       ctx.throw(404, '答案不存在')
     }
-    if (answer.questionId !== ctx.params.questionId) {
+    // 只有删除等操作才会检查此逻辑，赞和踩不检查此逻辑
+    if (answer.questionId && answer.questionId !== ctx.params.questionId) {
       ctx.throw(404, '该问题下没有此答案')
     }
     ctx.state.answer = answer

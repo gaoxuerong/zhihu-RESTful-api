@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/users')
 const Question = require('../models/questions')
+const Answer = require('../models/answers')
 const { secret } = require('../config')
 class UsersControler {
+  // 查找用户列表
   async find(ctx) {
     const { per_page = 10 } = ctx.query
     const page = Math.max(ctx.query.page * 1, 1) - 1
@@ -12,6 +14,7 @@ class UsersControler {
       .limit(perPage)
       .skip(page * perPage) // limit,skip做分页限制，limit(10)是每页显示10条，skip(10)是跳过前10项，
   }
+  // 查找特定用户
   async findById(ctx) {
     const { fields = '' } = ctx.query;
     const selectFields = fields.split(';').filter(f => f).map((f) => ' +' + f).join('')
@@ -33,6 +36,7 @@ class UsersControler {
     }
     ctx.body = user
   }
+  // 增加用户
   async created(ctx) {
     ctx.verifyParams({
       name: {
@@ -52,12 +56,14 @@ class UsersControler {
     const user = await new User(ctx.request.body).save()
     ctx.body = user
   }
+  // 检查用户是否有权限
   async checkOwner(ctx, next) {
     if (ctx.params.id !== ctx.state.user._id) {
       ctx.throw(403, '没有权限')
     }
     await next()
   }
+  // 更新用户
   async update(ctx) {
     ctx.verifyParams({
       name: {
@@ -106,6 +112,7 @@ class UsersControler {
     }
     ctx.body = user
   }
+  // 删除用户
   async delete(ctx) {
     // 没有内容但是成功了，https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status/204
     const user = await User.findByIdAndRemove(ctx.params.id)
@@ -114,6 +121,7 @@ class UsersControler {
     }
     ctx.status = 204;
   }
+  // 用户登录
   async login(ctx) {
     ctx.verifyParams({
       name: {
@@ -133,17 +141,20 @@ class UsersControler {
     const token = jwt.sign({ _id, name}, secret, {expiresIn: '1d'})
     ctx.body = { token }
   }
-  async listFollowing(ctx) { // 获取关注者
+  // 获取用户关注的列表
+  async listFollowing(ctx) {
     const user = await User.findById(ctx.params.id).select('+following').populate('following')
     if (!user) {
       ctx.throw(404,'用户不存在')
     }
     ctx.body= user.following
   }
-  async listFollowers(ctx) { // 获取粉丝数
+  // 获取用户的粉丝数
+  async listFollowers(ctx) {
     const users = await User.find({ following: ctx.params.id }) // 找到关注ctx.params.id的人
     ctx.body = users
   }
+  // 检查用户是否存在
   async checkUserExist(ctx, next) {
     const user = await User.findById(ctx.params.id)
     if (!user) {
@@ -151,6 +162,7 @@ class UsersControler {
     }
     await next()
   }
+  // 用户关注某人
   async follow(ctx) {
     const me = await User.findById(ctx.state.user._id).select('+following')
     if (!me.following.map(id => id.toString()).includes(ctx.params.id)){
@@ -159,6 +171,7 @@ class UsersControler {
     }
     ctx.status = 204
   }
+  // 用户取消关注某人
   async unfollow(ctx) {
     const me = await User.findById(ctx.state.user._id).select('+following')
     const index = me.following.map(id => id.toString()).indexOf(ctx.params.id)
@@ -168,6 +181,7 @@ class UsersControler {
     }
     ctx.status = 204
   }
+  // 获取用户关注的话题列表
   async listFollowingTopics(ctx) {
     const user = await User.findById(ctx.params.id).select('+followingTopics').populate('followingTopics')
     if (!user) {
@@ -175,6 +189,7 @@ class UsersControler {
     }
     ctx.body= user.followingTopics
   }
+  // 关注话题
   async followTopics(ctx) {
     const me = await User.findById(ctx.state.user._id).select('+followingTopics')
     if (!me.followingTopics.map(id => id.toString()).includes(ctx.params.id)){
@@ -183,6 +198,7 @@ class UsersControler {
     }
     ctx.status = 204
   }
+  // 取消关注话题
   async unfollowTopics(ctx) {
     const me = await User.findById(ctx.state.user._id).select('+followingTopics')
     const index = me.followingTopics.map(id => id.toString()).indexOf(ctx.params.id)
@@ -192,6 +208,65 @@ class UsersControler {
     }
     ctx.status = 204
   }
+  // 用户点赞列表
+  async listLikingAnswers(ctx) {
+    const user = await User.findById(ctx.params.id).select('+likingAnswers').populate('likingAnswers')
+    if (!user) {
+      ctx.throw(404,'用户不存在')
+    }
+    ctx.body= user.likingAnswers
+  }
+  // 用户点赞
+  async likeAnswers (ctx,next) {
+    const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
+    if (!me.likingAnswers.map(id => id.toString()).includes(ctx.params.id)){
+      me.likingAnswers.push(ctx.params.id)
+      me.save()
+      await Answer.findByIdAndUpdate(ctx.params.id, {$inc: {voteCount: 1}})
+    }
+    ctx.status = 204
+    await next()
+  }
+  // 用户取消点赞
+  async unlikegAnswers (ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+likingAnswers')
+    const index = me.likingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.likingAnswers.splice(index, 1)
+      me.save()
+      await Answer.findByIdAndUpdate(ctx.params.id, {$inc: {voteCount: -1}})
+    }
+    ctx.status = 204
+  }
+  // 用户踩列表
+  async listdisLikingAnswers(ctx) {
+    const user = await User.findById(ctx.params.id).select('+dislikingAnswers').populate('dislikingAnswers')
+    if (!user) {
+      ctx.throw(404,'用户不存在')
+    }
+    ctx.body= user.dislikingAnswers
+  }
+  // 用户踩
+  async dislikeAnswers (ctx, next) {
+    const me = await User.findById(ctx.state.user._id).select('+dislikingAnswers')
+    if (!me.dislikingAnswers.map(id => id.toString()).includes(ctx.params.id)){
+      me.dislikingAnswers.push(ctx.params.id)
+      me.save()
+    }
+    ctx.status = 204
+    await next()
+  }
+  // 用户取消踩
+  async undislikegAnswers (ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+dislikingAnswers')
+    const index = me.dislikingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.dislikingAnswers.splice(index, 1)
+      me.save()
+    }
+    ctx.status = 204
+  }
+  // 获取用户问题列表
   async listQuestions(ctx) {
     const questions = await Question.find({questioner: ctx.params.id})
     ctx.body = questions

@@ -18,11 +18,20 @@ const {
   unfollowTopics,
   listFollowers,
   checkUserExist,
-  listQuestions
+  listQuestions,
+  listLikingAnswers,
+  likeAnswers,
+  unlikegAnswers,
+  listdisLikingAnswers,
+  dislikeAnswers,
+  undislikegAnswers
 } = require('../controllers/users')
 const {
   checkTopicExist
 } = require('../controllers/topics')
+const {
+  checkAnswerExist
+} = require('../controllers/answers')
 const { secret } = require('../config')
 // const auth = async (ctx, next) => { // 安全相关中间件
 //   const { authorization = '' } = ctx.request.header
@@ -50,5 +59,11 @@ router.get('/:id/followingTopics', listFollowingTopics)
 router.put('/followingTopics/:id',auth, checkTopicExist, followTopics);
 router.delete('/followingTopics/:id',auth, checkTopicExist, unfollowTopics);
 router.get('/:id/questions', listQuestions)
+router.get('/:id/listLikingAnswers', listLikingAnswers)
+router.put('/likeAnswers/:id',auth, checkAnswerExist, likeAnswers,undislikegAnswers);// 点击喜欢后，就把不喜欢的delete掉
+router.delete('/likeAnswers/:id',auth, checkAnswerExist, unlikegAnswers);
+router.get('/:id/listdisLikingAnswers', listdisLikingAnswers)
+router.put('/dislikeAnswers/:id',auth, checkAnswerExist, dislikeAnswers,unlikegAnswers);// 点击不喜欢后，就把喜欢的delete掉
+router.delete('/dislikeAnswers/:id',auth, checkAnswerExist, undislikegAnswers);
 module.exports = router
 
