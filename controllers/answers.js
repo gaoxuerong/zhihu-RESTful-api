@@ -16,7 +16,7 @@ class AnswersControler {
       ctx.throw(404, '答案不存在')
     }
     if (answer.questionId !== ctx.params.questionId) {
-      ctx.throw(404, '该问题下没有子答案')
+      ctx.throw(404, '该问题下没有此答案')
     }
     ctx.state.answer = answer
     await next()
@@ -32,9 +32,27 @@ class AnswersControler {
       content: { type: 'string', required: true }
     })
     const answerer =  ctx.state.user._id
-    const questionId = ctx.params.questionId
-    const answer = await new Answer({...ctx.request.body, answerer: answerer, questionId: questionId}).save()
+    const { questionId } = ctx.params
+    const answer = await new Answer({...ctx.request.body, answerer, questionId}).save()
     ctx.body = answer
+  }
+  async checkAnswerer(ctx, next) {
+    const { answer } = ctx.state
+    if (answer.answerer.toString() !== ctx.state.user._id) {
+      ctx.throw(403, '没有权限')
+    }
+    await next()
+  }
+  async update(ctx) {
+    ctx.verifyParams({
+      content: { type: 'string', required: false }
+    })
+    await ctx.state.answer.update(ctx.request.body)
+    ctx.body = ctx.state.answer
+  }
+  async delete (ctx) {
+    await Answer.findByIdAndDelete(ctx.params.id)
+    ctx.status = 204
   }
 }
 module.exports = new AnswersControler()
