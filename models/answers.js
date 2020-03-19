@@ -25,4 +25,4 @@ const answerSchema = new Schema({
     default: 0
   }
 })
-module.exports = model('answer',answerSchema)
+module.exports = model('Answer',answerSchema)

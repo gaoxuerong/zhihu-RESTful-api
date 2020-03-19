@@ -24,7 +24,10 @@ const {
   unlikegAnswers,
   listdisLikingAnswers,
   dislikeAnswers,
-  undislikegAnswers
+  undislikegAnswers,
+  listCollectionAnswers,
+  collectAnswers,
+  uncollectAnswers
 } = require('../controllers/users')
 const {
   checkTopicExist
@@ -60,10 +63,13 @@ router.put('/followingTopics/:id',auth, checkTopicExist, followTopics);
 router.delete('/followingTopics/:id',auth, checkTopicExist, unfollowTopics);
 router.get('/:id/questions', listQuestions)
 router.get('/:id/listLikingAnswers', listLikingAnswers)
-router.put('/likeAnswers/:id',auth, checkAnswerExist, likeAnswers,undislikegAnswers);// 点击喜欢后，就把不喜欢的delete掉
+router.put('/likeAnswers/:id',auth, checkAnswerExist, likeAnswers,undislikegAnswers);// 点击喜欢后，就把不喜欢的delete掉, 互斥关系
 router.delete('/likeAnswers/:id',auth, checkAnswerExist, unlikegAnswers);
 router.get('/:id/listdisLikingAnswers', listdisLikingAnswers)
-router.put('/dislikeAnswers/:id',auth, checkAnswerExist, dislikeAnswers,unlikegAnswers);// 点击不喜欢后，就把喜欢的delete掉
+router.put('/dislikeAnswers/:id',auth, checkAnswerExist, dislikeAnswers,unlikegAnswers);// 点击不喜欢后，就把喜欢的delete掉, 互斥关系
 router.delete('/dislikeAnswers/:id',auth, checkAnswerExist, undislikegAnswers);
+router.get('/:id/listCollectionAnswers', listCollectionAnswers)
+router.put('/collectAnswers/:id',auth, checkAnswerExist, collectAnswers);
+router.delete('/collectAnswers/:id',auth, checkAnswerExist, uncollectAnswers);
 module.exports = router
 

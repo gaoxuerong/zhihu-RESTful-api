@@ -210,7 +210,7 @@ class UsersControler {
   }
   // 用户点赞列表
   async listLikingAnswers(ctx) {
-    const user = await User.findById(ctx.params.id).select('+likingAnswers').populate('likingAnswers')
+    const user = await User.findById(ctx.params.id).select('+collectingAnswers').populate('likingAnswers')
     if (!user) {
       ctx.throw(404,'用户不存在')
     }
@@ -270,6 +270,34 @@ class UsersControler {
   async listQuestions(ctx) {
     const questions = await Question.find({questioner: ctx.params.id})
     ctx.body = questions
+  }
+  // 用户收藏列表
+  async listCollectionAnswers(ctx) {
+    const user = await User.findById(ctx.params.id).select('+collectingAnswers').populate('collectingAnswers')
+    if (!user) {
+      ctx.throw(404,'用户不存在')
+    }
+    ctx.body= user.collectingAnswers
+  }
+  // 收藏
+  async collectAnswers (ctx,next) {
+    const me = await User.findById(ctx.state.user._id).select('+collectingAnswers')
+    if (!me.collectingAnswers.map(id => id.toString()).includes(ctx.params.id)){
+      me.collectingAnswers.push(ctx.params.id)
+      me.save()
+    }
+    ctx.status = 204
+    await next()
+  }
+  // 取消收藏
+  async uncollectAnswers (ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+collectingAnswers')
+    const index = me.collectingAnswers.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.collectingAnswers.splice(index, 1)
+      me.save()
+    }
+    ctx.status = 204
   }
 }
 module.exports = new UsersControler()
