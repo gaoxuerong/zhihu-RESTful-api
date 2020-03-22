@@ -8,13 +8,13 @@ const {
   update,
   delete: del,
   checkCommentExist,
-  checkCommenter
+  checkCommentator
 } = require('../controllers/comments')
 const { secret } = require('../config')
 const auth = JWT({ secret })
 router.get("/", find)
 router.post("/", auth, create)
 router.get("/:id", checkCommentExist, findById)
-router.patch("/:id", auth, checkCommentExist, checkCommenter, update)
-router.delete("/:id", auth, checkCommentExist, checkCommenter, del)
+router.patch("/:id", auth, checkCommentExist, checkCommentator, update)
+router.delete("/:id", auth, checkCommentExist, checkCommentator, del)
 module.exports = router
