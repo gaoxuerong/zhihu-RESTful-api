@@ -4,7 +4,8 @@ module.exports = (app) => {
     if (file === 'index.js') {
       return
     }
-    const route = require(`./${file}`)
+    // const route = require(`./${file}`);
+    const route = require('./answer');
     app.use(route.routes()).use(route.allowedMethods())// 响应options方法，告诉他所支持的请求方法
   })
 }

@@ -1,4 +1,4 @@
-const Router = require("koa-router")
+const Router = require("@koa/router")
 const JWT = require('koa-jwt')
 const router = new Router({prefix: '/users'})
 // delete是js关键字，不能直接使用
